@@ -1,0 +1,330 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int info;
+    struct node* link;
+};typedef struct node* NODE;
+
+NODE createNode(int ele){
+    NODE ptr=(NODE)(malloc(sizeof(struct node)));
+    
+    ptr->info=ele;
+    ptr->link=NULL;
+    return ptr;
+}
+
+NODE insert_front(NODE first,int ele){
+    NODE temp=createNode(ele);
+   
+    if(first==NULL){
+        first=temp;
+    }
+    else{
+       temp->link=first;
+       
+    }
+    return temp;
+}
+NODE insert_rear(NODE first,int ele){
+    NODE temp=createNode(ele);
+    NODE cur=first;
+    if(first==NULL){
+    return temp;
+    }
+    while(cur->link!=NULL){
+        cur=cur->link;
+    }
+    cur->link=temp;
+    return first;
+}
+NODE delete_front(NODE first){
+    if(first==NULL){
+        printf("no ele in list\n");
+        return NULL;
+    }
+    else if(first->link==NULL){
+        printf("deleted ele=%d\n",first->info);
+        free(first);
+        return NULL;
+    }
+    else{
+        NODE cur=first;
+        first=first->link;
+        printf("deleted ele=%d\n",cur->info);
+        free(cur);
+        return first;
+    }
+  
+}
+NODE delete_rear(NODE first){
+    if(first==NULL){
+        printf("no ele to delete\n");
+        return NULL;
+    }
+    else if(first->link==NULL){
+        printf("deleted ele=%d\n",first->info);
+        free(first);
+        return NULL;
+    }
+    else{
+        NODE cur=first,prev=NULL;
+        while(cur->link!=NULL){
+            prev=cur; //IMPORTANT.....
+            cur=cur->link;
+        }
+        printf("deleted ele=%d\n",cur->info);
+        free(cur);
+        prev->link=NULL;//IMPORTANT...
+        return first;
+    }
+}
+NODE insert_middle(NODE first,int ele){
+    NODE temp=createNode(ele);
+    int size=0;
+    int i=0,pos=0;
+    NODE cur=first,prev=NULL,count=first;
+    while(count!=NULL){
+        count=count->link;
+        size++;
+    }
+    printf("No. of elemets is %d\n",size);
+    if(size%2==0){
+        i=(size/2);
+    }
+    else{
+        i=(size+1)/2;
+    }
+        
+    for(pos=0;pos<i;pos++){
+        prev=cur;
+        cur=cur->link;
+       
+    }
+    prev->link=temp;
+    temp->link=cur;
+    return first;
+}
+NODE delete_middle(NODE first){
+    if(first==NULL){
+        printf("no ele to delete\n");
+        return NULL;
+    }
+    else if(first->link==NULL){
+        printf("deleted ele is %d\n",first->info);
+        free(first);
+        return NULL;
+    }
+    else if(first->link->link==NULL){
+    NODE cur=first;
+        first=first->link;
+        printf("delted ele is %d\n",cur->info);
+        free(cur);
+        return first;
+    }
+    NODE cur=first,count=first,prev=NULL;
+    int pos=0,i=0,size=0;
+    while(count!=NULL){
+        count=count->link;
+        size++;
+    }
+    printf("no. of elts is %d\n",size);
+    if(size%2==0){
+        pos=size/2;
+    }
+    else{
+        pos=(size+1)/2;
+    }
+    for(i=0;i<pos-1;i++){
+        prev=cur;
+        cur=cur->link;
+    }
+    printf("deleted ele is %d\n",cur->info);
+    prev->link=cur->link;
+    free(cur);
+    return first;
+}
+void display(NODE first){
+    NODE cur=first;
+    if(first==NULL){
+        printf("NULL\n");
+    }
+    else{
+        while(cur!=NULL){
+            printf("%d->",cur->info);
+            cur=cur->link;
+        }
+        printf("NULL\n");
+    }
+}
+NODE reverse(NODE first){
+    if(first==NULL){
+        printf("NULL\n");
+        return NULL;
+    }
+    else{
+        NODE first1=NULL,temp;
+        while(first!=NULL){
+            temp=first;
+            first=first->link;
+            temp->link=first1;
+            first1=temp;
+        }
+        return first1;
+    }
+}
+NODE search_key(NODE first){
+  int key;
+  printf("enter the ele:\n");
+  scanf("%d",&key);
+    if(first==NULL){
+        printf("cant find empty list\n");
+        return NULL;
+    }
+    else{
+          NODE cur=first;
+          int pos=-1;
+          while(cur!=NULL){
+              pos++;
+              if(cur->info==key){
+                  printf("ele found at index %d\n",pos);
+                  
+                  return first;
+                }
+            else{
+                cur=cur->link;
+            }
+              
+          }
+          printf("Key not found in list\n");
+          return first;
+    }
+}
+NODE search_insert(NODE first){
+     int after,ele;
+     printf("enter ele to insert\n");
+     scanf("%d",&ele);
+     NODE temp=createNode(ele);
+     printf("enter after which ele the key to be inserted\n");
+     scanf("%d",&after);
+     NODE cur=first,next=first->link;
+     while(cur!=NULL){
+         if(cur->info==after){
+             cur->link=temp;
+             temp->link=next;
+             return first;
+         }
+         else{
+             if(next->link!=NULL){
+                  cur=next;
+                 next=next->link;
+             }
+             else{
+                   printf("Key not found hence cant insert\n");
+                   return first;
+             }
+             
+            
+         }
+     }
+   
+}
+NODE search_delete(NODE first){
+    int key;
+    printf("enter key to search and delete\n");
+    scanf("%d",&key);
+    NODE cur=first,prev=NULL;
+    while(cur!=NULL){
+    if(cur->info==key){
+        printf("found and delted\n");
+        prev->link=cur->link;
+        free(cur);
+        return first;
+    }    
+    else{
+        prev=cur;
+        cur=cur->link;
+    }
+    }
+    printf("key not found to delete\n");
+    return first;
+}
+NODE concat(NODE first,NODE second){
+   if(first==NULL || second==NULL){
+       printf("empty list concatenation failed\n");
+       return first;
+   }
+   else{
+       NODE cur=first;
+       while(cur->link!=NULL){
+           cur=cur->link;
+         }
+         cur->link=second;
+         return first;
+   }
+    
+}
+void main(){
+    NODE first=NULL;
+    int ele,choice,ch;
+    NODE second=NULL;
+    for(;;){
+        printf("enter\n1.insert_front\n2.insert_rear\n3.insert_middle\n4.delete_front\n5.delete_rear\n6.delete_middle\n7.search_key\n8.search_insert\n9.search_delete\n10.reverse\n11.concat\n12.display\n13.exit\n");
+        scanf("%d",&choice);
+        switch(choice){
+            case 1:
+            printf("enter ele:\n");
+            scanf("%d",&ele);
+            first=insert_front(first,ele);
+            break;
+            case 2:
+            printf("enter ele:\n");
+            scanf("%d",&ele);
+            first=insert_rear(first,ele);
+            break;
+            case 3: printf("enter ele:\n");
+            scanf("%d",&ele);
+            first=insert_middle(first,ele);
+            break;
+            case 4:first=delete_front(first);
+            break;
+            case 5:first=delete_rear(first);
+            break;
+            case 6:first=delete_middle(first);
+            break;
+            case 7:first=search_key(first);
+            break;
+            case 8:first=search_insert(first);
+            break;
+            case 9:first=search_delete(first);
+            break;
+            case 10:first=reverse(first);
+            printf("reversed, display and check\n");
+            break;
+            case 11:
+            for(;;){
+                printf("enter 0 to stop forming second list:\n");
+                scanf("%d",&ch);
+                if(ch!=0){
+                    second=insert_rear(second,ch);  
+                }
+                if(ch==0){
+                 first=concat(first,second);
+                 printf("concatenation done,display to check\n");
+                  break;
+                }
+                 
+            }
+             
+            break;
+            case 12:display(first);
+            break;
+            case 13:exit(0);
+            default:printf("invalid choice\n");
+        }
+    }
+}
+
+
+
+

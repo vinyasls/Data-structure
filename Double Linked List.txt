@@ -1,0 +1,128 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int info;
+    struct node* left;
+    struct node* right;
+};typedef struct node* NODE;
+
+NODE createNode(int ele){
+    NODE ptr=(NODE)(malloc(sizeof(struct node)));
+    ptr->info=ele;
+    ptr->left=NULL;
+    ptr->right=NULL;
+    return ptr;
+}
+
+NODE insert_front_dll(NODE first,int ele){
+    NODE temp=createNode(ele);
+    if(first==NULL){
+        return temp;
+    }
+    else{
+        temp->right=first;
+        first->left=temp;
+        temp->left=NULL;
+        return temp;
+    }
+}
+NODE insert_rear_dll(NODE first,int ele){
+    NODE temp=createNode(ele);
+    if(first==NULL){
+        return temp;
+    }
+    else{
+        NODE cur=first;
+        while(cur->right!=NULL){
+            cur=cur->right;
+        }
+        cur->right=temp;
+        temp->left=cur;
+        return first;
+    }
+}
+NODE delete_front_dll(NODE first){
+    if(first==NULL){
+        return NULL;
+    }
+    else if(first->right==NULL){
+        printf("deleted ele is %d\n",first->info);
+        free(first);
+        return NULL;
+    }
+    else{
+        NODE cur=first;
+        first=first->right;
+        printf("deleted ele is %d\n",cur->info);
+        free(cur);
+        return first;
+    }
+}
+NODE delete_rear_dll(NODE first){
+    if(first==NULL){
+        printf("empty list to delete\n");
+        return NULL;
+    }
+    else if(first->right==NULL){
+        printf("deleted ele is %d\n",first->info);
+        free(first);
+        return NULL;
+    }
+    else{
+        NODE cur=first,prev=NULL;
+        while(cur->right!=NULL){
+            prev=cur;
+            cur=cur->right;
+        }
+        printf("delted ele is %d\n",cur->info);
+        prev->right=NULL;
+        free(cur);
+        return first;
+    }
+}
+void display_dll(NODE first){
+    if(first==NULL){
+        printf("NULL\n");
+    }
+    else{
+        NODE cur=first;
+        while(cur!=NULL){
+            printf("%d->",cur->info);
+            cur=cur->right;
+        }
+        printf("NULL\n");
+    }
+}
+void main(){
+    NODE first=NULL;
+    int ele,choice;
+    for(;;){
+        printf("Enter\n1.insert front dll\n2.insert rear dll\n3.delete front dll\n4.delete rear dll\n5.display dll\n6.exit\n");
+    scanf("%d",&choice);
+    switch(choice){
+        case 1:
+        printf("enter the ele:\n");
+        scanf("%d",&ele);
+        first=insert_front_dll(first,ele);
+        break;
+        case 2:printf("enter the ele:\n");
+        scanf("%d",&ele);
+        first=insert_rear_dll(first,ele);
+        break;
+        case 3:first=delete_front_dll(first);
+        break;
+        case 4:first=delete_rear_dll(first);
+        break;
+        case 5:display_dll(first);
+        break;
+        case 6:exit(0);
+        default:printf("invalid choice\n");
+        break;
+    }
+    }
+    
+}
+
+
+
